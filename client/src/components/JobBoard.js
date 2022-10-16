@@ -1,4 +1,5 @@
 import JobList from "./JobList";
+// import { jobs as fakeJobs } from '../fake-data';
 import { getAllJobs } from "../graphql/queries";
 import { useEffect, useState } from "react";
 
