@@ -19,7 +19,7 @@ export const getAllJobs = async () => {
   return data;
 };
 
-export const getJobById = async id => {
+export const getJobById = async (id) => {
   console.log("sending request with jobId", id);
   const query = gql`
     query GetJobById($id: ID!) {
@@ -38,8 +38,8 @@ export const getJobById = async id => {
   return job;
 };
 
-export const getCompanyById = async id => {
-    const query = gql`
+export const getCompanyById = async (id) => {
+  const query = gql`
     query GetCompanyById($companyId: ID!) {
       company(id: $companyId) {
         id
@@ -50,8 +50,26 @@ export const getCompanyById = async id => {
           title
         }
       }
-     }
-    `;
-    const { company } = await request(GRAPHQL_URL, query, { companyId: id });
-    return company;
-}
+    }
+  `;
+  const { company } = await request(GRAPHQL_URL, query, { companyId: id });
+  return company;
+};
+
+export const createJob = async (jobDetail) => {
+  const query = gql`
+    mutation ($jobDetail: JobDetail!) {
+      job: createJob(jobDetail: $jobDetail) {
+        id
+        title
+        description
+        company {
+          id
+          name
+        }
+      }
+    }
+  `;
+  const { job } = await request(GRAPHQL_URL, query, { jobDetail: jobDetail });
+  return job;
+};
