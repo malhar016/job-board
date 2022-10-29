@@ -15,4 +15,15 @@ type Company {
   id: ID!
   name: String
   description: String
+  jobs: [Job]
+}
+
+type Mutation {
+  createJob(jobDetail: JobDetail!): Job
+}
+
+input JobDetail {
+  title: String!
+  description: String
+  companyId: String!
 }
