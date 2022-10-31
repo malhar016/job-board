@@ -19,7 +19,8 @@ type Company {
 }
 
 type Mutation {
-  createJob(jobDetail: JobDetail!): Job
+  createJob(jobDetail: JobDetail!): Job!
+  updateJob(jobId: ID!, jobDetail: JobDetail!): Job!
 }
 
 input JobDetail {

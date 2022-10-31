@@ -22,5 +22,19 @@ export const resolvers = {
       }
       return Job.create(jobDetail);
     },
+
+    updateJob(_root, { jobId, jobDetail }, { auth }) {
+      if (!auth) {
+        throw new Error("Unauthorized");
+      }
+      /* jobDetail.id = jobId;
+      return Job.update(jobDetail) */
+
+      //TODO use findById or just set it and update as above?
+      return Job.findById(jobId).then((job) => {
+        if (!job) throw new Error(`Cannot find job with id: ${jobId}`); //TODO show jobId in error or not?
+        return Job.update({ ...jobDetail, id: job.id });
+      });
+    },
   },
 };
