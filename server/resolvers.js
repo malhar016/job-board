@@ -16,6 +16,11 @@ export const resolvers = {
   },
 
   Mutation: {
-    createJob: (_root, { jobDetail }) => Job.create(jobDetail),
+    createJob: (_root, { jobDetail }, { auth }) => {
+      if (!auth) {
+        throw new Error("Unautorized");
+      }
+      return Job.create(jobDetail);
+    },
   },
 };

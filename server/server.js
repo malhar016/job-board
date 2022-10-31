@@ -34,7 +34,8 @@ app.post("/login", async (req, res) => {
 
 const typeDefs = await readFile("./schema.graphql", "utf-8");
 console.log("typeDefs: ", typeDefs);
-const apolloServer = new ApolloServer({ typeDefs, resolvers });
+const context = ({ req: { auth } }) => ({ auth });
+const apolloServer = new ApolloServer({ typeDefs, resolvers, context });
 
 await apolloServer.start();
 
