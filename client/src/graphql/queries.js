@@ -1,23 +1,23 @@
-import { request, gql } from "graphql-request";
+import { gql, ApolloClient, InMemoryCache } from "@apollo/client";
 
 const GRAPHQL_URL = "http://localhost:9000/graphql";
+export const client = new ApolloClient({
+  uri: GRAPHQL_URL,
+  cache: new InMemoryCache(),
+});
 
-export const getAllJobs = async () => {
-  const query = gql`
-    query GET_ALL_JOBS {
-      jobs {
+export const GET_JOBS_QUERY = gql`
+  query GetAllJobs {
+    jobs {
+      id
+      title
+      company {
         id
-        title
-        company {
-          id
-          name
-        }
+        name
       }
     }
-  `;
-  const data = await request(GRAPHQL_URL, query);
-  return data;
-};
+  }
+`;
 
 export const getJobById = async (id) => {
   console.log("sending request with jobId", id);
@@ -34,7 +34,10 @@ export const getJobById = async (id) => {
       }
     }
   `;
-  const { job } = await request(GRAPHQL_URL, query, { id });
+  const {
+    data: { job },
+  } = await client.query({ query, variables: { id } });
+  // const { job } = await request(GRAPHQL_URL, query, { id });
   return job;
 };
 
@@ -52,12 +55,15 @@ export const getCompanyById = async (id) => {
       }
     }
   `;
-  const { company } = await request(GRAPHQL_URL, query, { companyId: id });
+  const {
+    data: { company },
+  } = await client.query({ query, variables: { companyId: id } });
+  // const { company } = await request(GRAPHQL_URL, query, { companyId: id });
   return company;
 };
 
 export const createJob = async (jobDetail) => {
-  const query = gql`
+  const mutation = gql`
     mutation ($jobDetail: JobDetail!) {
       job: createJob(jobDetail: $jobDetail) {
         id
@@ -70,6 +76,9 @@ export const createJob = async (jobDetail) => {
       }
     }
   `;
-  const { job } = await request(GRAPHQL_URL, query, { jobDetail: jobDetail });
+  const {
+    data: { job },
+  } = client.mutate({ mutation, variables: { jobDetail } });
+  // const { job } = await request(GRAPHQL_URL, mutation, { jobDetail: jobDetail });
   return job;
 };
